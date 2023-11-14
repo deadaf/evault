@@ -4,35 +4,44 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>eVault - a blockchain-based storage system for legal records</title>
-
 		<script src="https://unpkg.com/htmx.org"></script>
-		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="static/scripts/wallet.js"></script>
+		<script src="static/scripts/auth.js"></script>
 	</head>
 	<body>
-		<button class="px-3 py-1 bg-blue-600 text-white ml-4" id="loginBtn" onclick="toggleMetaMaskConnection()">
-			Toggle MetaMask Connection
-		</button>
-		<button
-			class="px-3 py-1 bg-blue-600 text-white ml-4"
-			id="logoutBtn"
-			onclick="disconnectFromMetaMask()"
-			style="display: none"
-		>
-			Logout from MetaMask
-		</button>
-		<div id="walletBalance" style="display: none"></div>
+		<div id="authBtns">
+			<button id="loginBtn" onclick="handleLogin()">Login using MetaMask</button>
+			<button id="signupBtn" onclick="showSignupForm()">Sign Up, if you are New</button>
+		</div>
+
+		<div id="signupForm" style="display: none">
+			<form id="userForm">
+				<label for="name">Name:</label>
+				<input type="text" id="name" name="name" required /><br />
+
+				<label for="email">Email:</label>
+				<input type="email" id="email" name="email" required /><br />
+
+				<label for="userType">User Type:</label>
+				<select id="userType" name="userType">
+					<option value="judge">Judge</option>
+					<option value="lawyer">Lawyer</option></select
+				><br />
+
+				<button type="button" onclick="handleSignup()">Sign Up</button>
+				<button type="button" onclick="hideSignupForm()">Cancel</button>
+			</form>
+		</div>
+
+		<div id="userData" style="display: none">
+			<h2>User Details</h2>
+			<p id="userName"></p>
+			<p id="userEmail"></p>
+			<p id="userType"></p>
+		</div>
 
 		<script>
 			let isMetaMaskConnected = false;
-
-			async function toggleMetaMaskConnection() {
-				if (isMetaMaskConnected) {
-					await disconnectFromMetaMask();
-				} else {
-					await connectToMetaMask();
-				}
-			}
 		</script>
 	</body>
 </html>

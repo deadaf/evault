@@ -5,9 +5,9 @@ contract Case {
     struct CaseInfo {
         uint caseId;
         string caseTitle;
-        address judge;
-        address lawyer;
-        address client;
+        string judge;
+        string lawyer;
+        string client;
         bool exists; // add exists member
     }
 
@@ -18,9 +18,9 @@ contract Case {
     function addCase(
         uint caseId,
         string memory caseTitle,
-        address judge,
-        address lawyer,
-        address client
+        string memory judge,
+        string memory lawyer,
+        string memory client
     ) public {
         require(!cases[caseId].exists);
         cases[caseId] = CaseInfo({
@@ -36,9 +36,9 @@ contract Case {
     function updateCase(
         uint caseId,
         string memory caseTitle,
-        address judge,
-        address lawyer,
-        address client
+        string memory judge,
+        string memory lawyer,
+        string memory client
     ) public {
         require(cases[caseId].exists);
 
@@ -59,15 +59,15 @@ contract Case {
         return cases[caseId];
     }
 
-    function getJudge(uint caseId) public view returns (address) {
+    function getJudge(uint caseId) public view returns (string memory) {
         return cases[caseId].judge;
     }
 
-    function getLawyer(uint caseId) public view returns (address) {
+    function getLawyer(uint caseId) public view returns (string memory) {
         return cases[caseId].lawyer;
     }
 
-    function getClient(uint caseId) public view returns (address) {
+    function getClient(uint caseId) public view returns (string memory) {
         return cases[caseId].client;
     }
 }

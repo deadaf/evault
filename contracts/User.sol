@@ -3,19 +3,19 @@ pragma solidity ^0.8.0;
 
 contract User {
     struct UserInfo {
-        address walletAddress;
+        string walletAddress;
         string name;
         string email;
         uint userType; // 1 = lawyer, 2 = judge, 3 = client
         bool exists; // added exists variable
     }
 
-    mapping(address => UserInfo) public users;
+    mapping(string => UserInfo) public users;
 
     constructor() {}
 
     function addUser(
-        address walletAddress,
+        string memory walletAddress,
         string memory name,
         string memory email,
         uint userType
@@ -31,7 +31,7 @@ contract User {
     }
 
     function updateUser(
-        address walletAddress,
+        string memory walletAddress,
         string memory name,
         string memory email,
         uint userType
@@ -43,23 +43,23 @@ contract User {
         users[walletAddress].userType = userType;
     }
 
-    function deleteUser(address walletAddress) public {
+    function deleteUser(string memory walletAddress) public {
         require(users[walletAddress].exists);
 
         delete users[walletAddress];
     }
 
     function getUserInfo(
-        address walletAddress
+        string memory walletAddress
     ) public view returns (UserInfo memory) {
         return users[walletAddress];
     }
 
-    function isLawyer(address walletAddress) public view returns (bool) {
+    function isLawyer(string memory walletAddress) public view returns (bool) {
         return users[walletAddress].userType == 1;
     }
 
-    function isJudge(address walletAddress) public view returns (bool) {
+    function isJudge(string memory walletAddress) public view returns (bool) {
         return users[walletAddress].userType == 2;
     }
 }

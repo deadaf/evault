@@ -8,7 +8,6 @@ contract File {
         string fileType;
         uint caseId;
         bytes32 fileHash; // SHA-256 hash of the file
-        bool exists; // added member to track existence of file
     }
 
     mapping(uint => FileInfo) public files;
@@ -22,35 +21,34 @@ contract File {
         uint caseId,
         bytes32 fileHash
     ) public {
-        require(!files[fileId].exists, "File already exists"); // check if file already exists
+        require(files[fileId].fileId == 0, "File already exists"); // check if file already exists
 
         files[fileId] = FileInfo({
             fileId: fileId,
             fileName: fileName,
             fileType: fileType,
             caseId: caseId,
-            fileHash: fileHash,
-            exists: true // set exists to true
+            fileHash: fileHash
         });
     }
 
     function downloadFile(uint fileId) public view returns (FileInfo memory) {
-        require(files[fileId].exists, "File does not exist"); // check if file exists
+        require(files[fileId].fileId != 0, "File does not exist"); // check if file exists
         return files[fileId];
     }
 
     function deleteFile(uint fileId) public {
-        require(files[fileId].exists, "File does not exist"); // check if file exists
+        require(files[fileId].fileId != 0, "File does not exist"); // check if file exists
         delete files[fileId];
     }
 
     function getFileHash(uint fileId) public view returns (bytes32) {
-        require(files[fileId].exists, "File does not exist"); // check if file exists
+        require(files[fileId].fileId != 0, "File does not exist"); // check if file exists
         return files[fileId].fileHash;
     }
 
     function getCaseId(uint fileId) public view returns (uint) {
-        require(files[fileId].exists, "File does not exist"); // check if file exists
+        require(files[fileId].fileId != 0, "File does not exist"); // check if file exists
         return files[fileId].caseId;
     }
 }

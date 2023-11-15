@@ -8,7 +8,6 @@ contract Case {
         string judge;
         string lawyer;
         string client;
-        bool exists; // add exists member
     }
 
     mapping(uint => CaseInfo) public cases;
@@ -22,14 +21,13 @@ contract Case {
         string memory lawyer,
         string memory client
     ) public {
-        require(!cases[caseId].exists);
+        require(cases[caseId].caseId == 0, "Case already exists");
         cases[caseId] = CaseInfo({
             caseId: caseId,
             caseTitle: caseTitle,
             judge: judge,
             lawyer: lawyer,
-            client: client,
-            exists: true // set exists to true
+            client: client
         });
     }
 
@@ -40,7 +38,7 @@ contract Case {
         string memory lawyer,
         string memory client
     ) public {
-        require(cases[caseId].exists);
+        require(cases[caseId].caseId != 0);
 
         cases[caseId].caseTitle = caseTitle;
         cases[caseId].judge = judge;
@@ -49,10 +47,9 @@ contract Case {
     }
 
     function deleteCase(uint caseId) public {
-        require(cases[caseId].exists);
+        require(cases[caseId].caseId != 0);
 
         delete cases[caseId];
-        cases[caseId].exists = false; // set exists to false
     }
 
     function getCaseInfo(uint caseId) public view returns (CaseInfo memory) {

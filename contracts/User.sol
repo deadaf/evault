@@ -7,7 +7,6 @@ contract User {
         string name;
         string email;
         uint userType; // 1 = lawyer, 2 = judge, 3 = client
-        bool exists; // added exists variable
     }
 
     mapping(string => UserInfo) public users;
@@ -20,13 +19,12 @@ contract User {
         string memory email,
         uint userType
     ) public {
-        require(!users[walletAddress].exists, "User already exists");
+        require(users[walletAddress].userType == 0, "User already exists");
         users[walletAddress] = UserInfo({
             walletAddress: walletAddress,
             name: name,
             email: email,
-            userType: userType,
-            exists: true // set exists to true
+            userType: userType
         });
     }
 
@@ -36,7 +34,7 @@ contract User {
         string memory email,
         uint userType
     ) public {
-        require(users[walletAddress].exists);
+        require(users[walletAddress].userType != 0);
 
         users[walletAddress].name = name;
         users[walletAddress].email = email;
@@ -44,7 +42,7 @@ contract User {
     }
 
     function deleteUser(string memory walletAddress) public {
-        require(users[walletAddress].exists);
+        require(users[walletAddress].userType != 0);
 
         delete users[walletAddress];
     }

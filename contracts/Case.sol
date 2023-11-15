@@ -4,10 +4,20 @@ pragma solidity ^0.8.0;
 contract Case {
     struct CaseInfo {
         uint caseId;
-        string caseTitle;
-        string judge;
-        string lawyer;
-        string client;
+        string title;
+        string description;
+        uint caseType; // 1: Civil, 2: Criminal, 3: Family, 4: Labour, 5: Consumer, 6: Others
+        uint status; // 1: Pending, 2: Ongoing, 3: Closed
+        string ownerName;
+        string ownerAddress;
+        string ownerEmail;
+        string ownerPhone;
+        string ownerHomeAddress;
+        string judgeName;
+        string judgeAddress;
+        string judgeEmail;
+        string lawyerAddress;
+        string createdAt;
     }
 
     mapping(uint => CaseInfo) public cases;
@@ -16,34 +26,39 @@ contract Case {
 
     function addCase(
         uint caseId,
-        string memory caseTitle,
-        string memory judge,
-        string memory lawyer,
-        string memory client
+        string memory title,
+        string memory description,
+        uint caseType,
+        uint status,
+        string memory ownerName,
+        string memory ownerAddress,
+        string memory ownerEmail,
+        string memory ownerPhone,
+        string memory ownerHomeAddress,
+        string memory judgeName,
+        string memory judgeAddress,
+        string memory judgeEmail,
+        string memory lawyerAddress,
+        string memory createdAt
     ) public {
         require(cases[caseId].caseId == 0, "Case already exists");
         cases[caseId] = CaseInfo({
             caseId: caseId,
-            caseTitle: caseTitle,
-            judge: judge,
-            lawyer: lawyer,
-            client: client
+            title: title,
+            description: description,
+            caseType: caseType,
+            status: status,
+            ownerName: ownerName,
+            ownerAddress: ownerAddress,
+            ownerEmail: ownerEmail,
+            ownerPhone: ownerPhone,
+            ownerHomeAddress: ownerHomeAddress,
+            judgeName: judgeName,
+            judgeAddress: judgeAddress,
+            judgeEmail: judgeEmail,
+            lawyerAddress: lawyerAddress,
+            createdAt: createdAt
         });
-    }
-
-    function updateCase(
-        uint caseId,
-        string memory caseTitle,
-        string memory judge,
-        string memory lawyer,
-        string memory client
-    ) public {
-        require(cases[caseId].caseId != 0);
-
-        cases[caseId].caseTitle = caseTitle;
-        cases[caseId].judge = judge;
-        cases[caseId].lawyer = lawyer;
-        cases[caseId].client = client;
     }
 
     function deleteCase(uint caseId) public {
@@ -54,17 +69,5 @@ contract Case {
 
     function getCaseInfo(uint caseId) public view returns (CaseInfo memory) {
         return cases[caseId];
-    }
-
-    function getJudge(uint caseId) public view returns (string memory) {
-        return cases[caseId].judge;
-    }
-
-    function getLawyer(uint caseId) public view returns (string memory) {
-        return cases[caseId].lawyer;
-    }
-
-    function getClient(uint caseId) public view returns (string memory) {
-        return cases[caseId].client;
     }
 }

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from web3.exceptions import ContractLogicError
 
-from app.interact import get_case_contract
-from app.models import Case
+from app.interact import get_case_contract, get_file_contract
+from app.models import Case, File
 from datetime import datetime, timedelta
 
 router = APIRouter()
@@ -64,3 +64,18 @@ async def delete_case(caseId: int):
 
     except ContractLogicError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/{caseId}/files", response_model=list[File])
+async def get_files_by_case(caseId: str):
+    """Get a list of files associated with a case."""
+    file_contract = get_file_contract()
+    all_files = file_contract.functions.getAllFiles().call()
+
+    case_files = []
+    for file in all_files:
+        file = dict(zip(Case.__annotations__.keys(), file))
+
+        if file['caseId'] == caseId:
+            case_files.append(file)
+
+    return case_files

@@ -4,35 +4,39 @@ pragma solidity ^0.8.0;
 contract File {
     struct FileInfo {
         uint fileId;
-        string fileName;
-        string fileType;
+        string name;
         uint caseId;
-        bytes32 fileHash; // SHA-256 hash of the file
+        string fileAddress;
+        string secretKey;
+        string createdAt;
     }
 
     mapping(uint => FileInfo) public files;
+    uint public lastFileId;
 
     constructor() {}
 
     function uploadFile(
         uint fileId,
-        string memory fileName,
-        string memory fileType,
+        string memory name,
         uint caseId,
-        bytes32 fileHash
+        string memory fileAddress,
+        string memory secretKey,
+        string memory createdAt
     ) public {
         require(files[fileId].fileId == 0, "File already exists"); // check if file already exists
 
         files[fileId] = FileInfo({
             fileId: fileId,
-            fileName: fileName,
-            fileType: fileType,
+            name: name,
             caseId: caseId,
-            fileHash: fileHash
+            fileAddress: fileAddress,
+            secretKey: secretKey,
+            createdAt: createdAt
         });
     }
 
-    function downloadFile(uint fileId) public view returns (FileInfo memory) {
+    function getFileInfo(uint fileId) public view returns (FileInfo memory) {
         require(files[fileId].fileId != 0, "File does not exist"); // check if file exists
         return files[fileId];
     }
@@ -42,13 +46,17 @@ contract File {
         delete files[fileId];
     }
 
-    function getFileHash(uint fileId) public view returns (bytes32) {
-        require(files[fileId].fileId != 0, "File does not exist"); // check if file exists
-        return files[fileId].fileHash;
+    function getLastFileId() public view returns (uint) {
+        return lastFileId;
     }
 
-    function getCaseId(uint fileId) public view returns (uint) {
-        require(files[fileId].fileId != 0, "File does not exist"); // check if file exists
-        return files[fileId].caseId;
+    function getAllFiles() public view returns (FileInfo[] memory) {
+        FileInfo[] memory fileList = new FileInfo[](lastFileId);
+
+        for (uint i = 1; i <= lastFileId; i++) {
+            fileList[i - 1] = files[i];
+        }
+
+        return fileList;
     }
 }

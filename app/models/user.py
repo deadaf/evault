@@ -4,7 +4,7 @@ __all__ = ("User",)
 
 
 class User(BaseModel):
-    wallet_address: str
+    walletAddress: str
     name: str
     email: str
     userType: int

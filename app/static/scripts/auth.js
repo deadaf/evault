@@ -10,7 +10,10 @@ function hideSignupForm() {
 
 async function handleSignup() {
 	if (!isMetaMaskConnected) {
-		await connectToMetaMask();
+		walletAddress = await connectToMetaMask();
+	} else {
+		const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+		const walletAddress = accounts[0];
 	}
 
 	// Get form data
@@ -20,7 +23,7 @@ async function handleSignup() {
 
 	// Make a PUT request to /user with form data
 	try {
-		const response = await fetch("/user", {
+		const response = await fetch("/users", {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -29,6 +32,7 @@ async function handleSignup() {
 				name,
 				email,
 				userType,
+				walletAddress,
 			}),
 		});
 

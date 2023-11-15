@@ -59,4 +59,14 @@ contract Case {
     function getLastCaseId() public view returns (uint) {
         return lastCaseId;
     }
+
+    function getAllCases() public view returns (CaseInfo[] memory) {
+        CaseInfo[] memory caseList = new CaseInfo[](lastCaseId);
+
+        for (uint i = 1; i <= lastCaseId; i++) {
+            caseList[i - 1] = cases[i];
+        }
+
+        return caseList;
+    }
 }

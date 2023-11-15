@@ -4,21 +4,14 @@ __all__ = ("Case",)
 
 
 class Case(BaseModel):
-    caseId: int
+    caseId: int = 0
     title: str
     description: str
     caseType: int
     status: int
-    ownerName: str
+
     ownerAddress: str
-    ownerEmail: str
-    ownerPhone: str
-    ownerHomeAddress: str
-
-    judgeName: str
     judgeAddress: str
-    judgeEmail: str
-
     lawyerAddress: str
 
     createdAt: str = None

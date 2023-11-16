@@ -75,7 +75,9 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto mt-8">
-      <h2 className="mb-4 text-2xl font-bold">Welcome, {user.name}!</h2>
+      <h2 className="mb-4 text-2xl font-bold text-white">
+        Welcome, {user.name}!
+      </h2>
       <table className="min-w-full border border-gray-300 bg-white">
         <thead>
           <tr>

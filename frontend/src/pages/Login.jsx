@@ -24,11 +24,9 @@ const Login = () => {
               const data = await response.json();
               setUser(data);
               // Navigate to the dashboard after a timeout
-
-              console.log(user);
               setTimeout(() => {
                 navigator("/dashboard", {
-                  state: { data },
+                  state: user,
                 });
               }, 2000);
             } else {

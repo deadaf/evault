@@ -35,14 +35,32 @@
 		</div>
 
 		<div id="userData" style="display: none">
-			<h2>User Details</h2>
+			<h2>User:</h2>
 			<p id="userName"></p>
 			<p id="userEmail"></p>
 			<p id="userType"></p>
+
+			<table id="casesTable" style="display: none"></table>
 		</div>
+
+		<div id="caseModal" style="display: none"></div>
 
 		<script>
 			let isMetaMaskConnected = false;
 		</script>
+		<style>
+			/* Styles for the modal */
+			#caseModal {
+				display: none;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				padding: 20px;
+				background-color: #fff;
+				border: 1px solid #ccc;
+				z-index: 1000;
+			}
+		</style>
 	</body>
 </html>

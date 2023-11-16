@@ -33,6 +33,21 @@ const Dashboard = () => {
     },
   ];
 
+  const caseTypeNames = {
+    1: "Civil",
+    2: "Criminal",
+    3: "Family",
+    4: "Labour",
+    5: "Consumer",
+    6: "Others",
+  };
+
+  const caseStatusNames = {
+    1: "Pending",
+    2: "Ongoing",
+    3: "Closed",
+  };
+
   const [selectedCase, setSelectedCase] = useState(null);
   const [editedCase, setEditedCase] = useState(null);
 
@@ -100,7 +115,7 @@ const Dashboard = () => {
             <p>ID: {selectedCase.caseId}</p>
             <p>Title: {selectedCase.title}</p>
             <p>Description: {selectedCase.description}</p>
-            <p>Status: {selectedCase.status}</p>
+            <p>Status: {caseStatusNames[selectedCase.status]}</p>
             <button
               className="mt-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
               onClick={handleClosePopup}
@@ -118,15 +133,23 @@ const Dashboard = () => {
             <form onSubmit={(e) => e.preventDefault()}>
               <label className="mb-2 block" htmlFor="editCaseType">
                 Case Type:
-                <input
+                <select
                   className="w-full border border-gray-300 p-2"
-                  type="text"
                   id="editCaseType"
                   value={editedCase.caseType}
                   onChange={(e) =>
-                    setEditedCase({ ...editedCase, caseType: e.target.value })
+                    setEditedCase({
+                      ...editedCase,
+                      caseType: parseInt(e.target.value, 10),
+                    })
                   }
-                />
+                >
+                  {Object.entries(caseTypeNames).map(([key, value]) => (
+                    <option key={key} value={key}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="mb-2 block" htmlFor="editTitle">
@@ -160,15 +183,23 @@ const Dashboard = () => {
 
               <label className="mb-2 block" htmlFor="editStatus">
                 Status:
-                <input
+                <select
                   className="w-full border border-gray-300 p-2"
-                  type="text"
                   id="editStatus"
                   value={editedCase.status}
                   onChange={(e) =>
-                    setEditedCase({ ...editedCase, status: e.target.value })
+                    setEditedCase({
+                      ...editedCase,
+                      status: parseInt(e.target.value, 10),
+                    })
                   }
-                />
+                >
+                  {Object.entries(caseStatusNames).map(([key, value]) => (
+                    <option key={key} value={key}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="mb-2 block" htmlFor="editOwnerAddress">
@@ -216,7 +247,6 @@ const Dashboard = () => {
               </label>
 
               <br />
-
               <button
                 className="mt-4 rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-700"
                 onClick={handleEditSubmit}

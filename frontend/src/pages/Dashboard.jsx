@@ -50,6 +50,7 @@ const Dashboard = () => {
 
   const [selectedCase, setSelectedCase] = useState(null);
   const [editedCase, setEditedCase] = useState(null);
+  const [showAddCaseForm, setShowAddCaseForm] = useState(false);
 
   const handleShowMore = (caseId) => {
     const selected = cases.find((c) => c.caseId === caseId);
@@ -68,16 +69,38 @@ const Dashboard = () => {
     setEditedCase(null);
   };
 
+  const handleAddCase = () => {
+    setShowAddCaseForm(true);
+  };
+  const handleAddCaseSubmit = (newCase) => {
+    // Generate a random caseId for the new case
+    const randomCaseId = Math.floor(Math.random() * 1000) + 1;
+
+    // Append the new case to the cases list
+    const updatedCases = [...cases, { ...newCase, caseId: randomCaseId }];
+    // Replace this with your logic to submit the new case data to /users
+    console.log("Submitting new case:", updatedCases);
+
+    // Close the form
+    setShowAddCaseForm(false);
+  };
+
   const handleClosePopup = () => {
     setSelectedCase(null);
     setEditedCase(null);
+    setShowAddCaseForm(false);
   };
-
   return (
     <div className="container mx-auto mt-8">
       <h2 className="mb-4 text-2xl font-bold text-white">
         Welcome, {user.name}!
       </h2>
+      <button
+        className="mb-4 rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700"
+        onClick={handleAddCase}
+      >
+        Add Case
+      </button>
       <table className="min-w-full border border-gray-300 bg-white">
         <thead>
           <tr>
@@ -99,10 +122,17 @@ const Dashboard = () => {
                   Show More Data
                 </button>
                 <button
-                  className="rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-700"
+                  className="mr-2 rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-700"
                   onClick={() => handleEdit(c.caseId)}
                 >
                   Edit
+                </button>
+
+                <button className="mr-2 rounded bg-yellow-500 px-4 py-2 font-bold text-white hover:bg-yellow-700">
+                  Add File
+                </button>
+                <button className="mr-2 rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700">
+                  Browse Files
                 </button>
               </td>
             </tr>
@@ -252,6 +282,104 @@ const Dashboard = () => {
               <button
                 className="mt-4 rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-700"
                 onClick={handleEditSubmit}
+              >
+                Submit
+              </button>
+              <button
+                className="ml-2 mt-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                onClick={handleClosePopup}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+      {showAddCaseForm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="max-w-md rounded-md bg-white p-8">
+            <h3 className="mb-4 text-xl font-bold">Add Case</h3>
+            {/* Add Case Form */}
+            <form onSubmit={(e) => e.preventDefault()}>
+              <label className="mb-2 block" htmlFor="addTitle">
+                Title:
+                <input
+                  className="w-full border border-gray-300 p-2"
+                  type="text"
+                  id="addTitle"
+                  // Add appropriate onChange handler to update the form state
+                />
+              </label>
+
+              <label className="mb-2 block" htmlFor="addDescription">
+                Description:
+                <input
+                  className="w-full border border-gray-300 p-2"
+                  type="text"
+                  id="addDescription"
+                  // Add appropriate onChange handler to update the form state
+                />
+              </label>
+
+              <label className="mb-2 block" htmlFor="addCaseType">
+                Case Type:
+                <select
+                  className="w-full border border-gray-300 p-2"
+                  id="addCaseType"
+                  // Add appropriate onChange handler to update the form state
+                >
+                  {/* Populate options based on caseTypeNames */}
+                  {Object.entries(caseTypeNames).map(([key, value]) => (
+                    <option key={key} value={key}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="mb-2 block" htmlFor="addStatus">
+                Status:
+                <select
+                  className="w-full border border-gray-300 p-2"
+                  id="addStatus"
+                  // Add appropriate onChange handler to update the form state
+                >
+                  {/* Populate options based on caseStatusNames */}
+                  {Object.entries(caseStatusNames).map(([key, value]) => (
+                    <option key={key} value={key}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="mb-2 block" htmlFor="addOwnerAddress">
+                Owner Address:
+                <input
+                  className="w-full border border-gray-300 p-2"
+                  type="text"
+                  id="addOwnerAddress"
+                  // Add appropriate onChange handler to update the form state
+                />
+              </label>
+
+              <label className="mb-2 block" htmlFor="addJudgeAddress">
+                Judge Address:
+                <input
+                  className="w-full border border-gray-300 p-2"
+                  type="text"
+                  id="addJudgeAddress"
+                  // Add appropriate onChange handler to update the form state
+                />
+              </label>
+
+              {/* Add other form fields as needed */}
+
+              <button
+                className="mt-4 rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-700"
+                onClick={() =>
+                  handleAddCaseSubmit(/* pass the form data here */)
+                }
               >
                 Submit
               </button>

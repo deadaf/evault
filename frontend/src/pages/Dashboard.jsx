@@ -1,13 +1,7 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 
-const Dashboard = () => {
-  const user = {
-    walletAddress: "0x7b8b828c32a5b314998eeb839a647e8d469d0206",
-    name: "rohitgahlyan",
-    email: "gahlyanrohit18@gmail.com",
-    userType: 1,
-  };
-
+const Dashboard = ({ user }) => {
   const cases = [
     {
       caseId: 1,

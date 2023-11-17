@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../consts";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+// eslint-disable-next-line react/prop-types
+const Login = ({ setUserProp }) => {
   const [user, setUser] = useState(null);
   const [showMetaMaskPrompt, setShowMetaMaskPrompt] = useState(false);
   const navigator = useNavigate();
@@ -23,11 +24,10 @@ const Login = () => {
             if (response.status === 200) {
               const data = await response.json();
               setUser(data);
+              setUserProp(data);
               // Navigate to the dashboard after a timeout
               setTimeout(() => {
-                navigator("/dashboard", {
-                  state: user,
-                });
+                navigator("/dashboard");
               }, 2000);
             } else {
               alert("User not found. Please sign up.");
@@ -45,7 +45,7 @@ const Login = () => {
     };
 
     checkMetaMask();
-  }, [navigator, user]);
+  }, [navigator, user, setUserProp]);
 
   return <div>{showMetaMaskPrompt && alert("MetaMask is not installed.")}</div>;
 };

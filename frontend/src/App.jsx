@@ -4,15 +4,18 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import { useState } from "react";
 
 function App() {
+  const [user, setUserProp] = useState(null);
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/login" element={<Login setUserProp={setUserProp} />} />
+
+        <Route path="/dashboard" element={<Dashboard user={user} />} />
       </Routes>
     </Router>
   );

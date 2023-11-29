@@ -17,17 +17,16 @@ contract File {
     constructor() {}
 
     function uploadFile(
-        uint fileId,
         string memory name,
         uint caseId,
         string memory fileAddress,
         string memory secretKey,
         string memory createdAt
     ) public {
-        require(files[fileId].fileId == 0, "File already exists"); // check if file already exists
+        lastFileId++;
 
-        files[fileId] = FileInfo({
-            fileId: fileId,
+        files[lastFileId] = FileInfo({
+            fileId: lastFileId,
             name: name,
             caseId: caseId,
             fileAddress: fileAddress,
@@ -39,11 +38,6 @@ contract File {
     function getFileInfo(uint fileId) public view returns (FileInfo memory) {
         require(files[fileId].fileId != 0, "File does not exist"); // check if file exists
         return files[fileId];
-    }
-
-    function deleteFile(uint fileId) public {
-        require(files[fileId].fileId != 0, "File does not exist"); // check if file exists
-        delete files[fileId];
     }
 
     function getLastFileId() public view returns (uint) {

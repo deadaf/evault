@@ -1,11 +1,31 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile
 from web3.exceptions import ContractLogicError
 
 from app.interact import get_case_contract, get_file_contract
 from app.models import Case, File
 from datetime import datetime, timedelta
+import pyAesCrypt
+import os
+import secrets
+
 
 router = APIRouter()
+
+
+@router.get("/", response_model=list[Case])
+async def get_all_cases():
+    """
+    Get all cases.
+    """
+    case_contract = get_case_contract()
+    all_cases = case_contract.functions.getAllCases().call()
+
+    cases = []
+    for case in all_cases:
+        case = dict(zip(Case.__annotations__.keys(), case))
+        cases.append(case)
+
+    return cases
 
 
 @router.get("/{caseId}", response_model=Case)
@@ -65,6 +85,7 @@ async def delete_case(caseId: int):
     except ContractLogicError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 @router.get("/{caseId}/files", response_model=list[File])
 async def get_files_by_case(caseId: str):
     """Get a list of files associated with a case."""
@@ -75,7 +96,39 @@ async def get_files_by_case(caseId: str):
     for file in all_files:
         file = dict(zip(Case.__annotations__.keys(), file))
 
-        if file['caseId'] == caseId:
+        if file["caseId"] == caseId:
             case_files.append(file)
 
     return case_files
+
+
+@router.put("/{caseId}/files")
+async def upload_a_file(caseId: int, file: UploadFile):
+    """Add a new file to the blockchain."""
+
+    content = await file.read()
+    with open(f"./uploads/{file.filename}", "wb") as fIn:
+        fIn.write(content)
+
+    bufferSize = 64 * 1024
+    password = secrets.token_urlsafe(32)
+
+    pyAesCrypt.encryptFile(
+        f"./uploads/{file.filename}",
+        f"./uploads/{file.filename}.aes",
+        password,
+        bufferSize,
+    )
+
+    os.remove(f"./uploads/{file.filename}")
+
+    file_contract = get_file_contract()
+    file_contract.functions.uploadFile(
+        file.filename,
+        caseId,
+        "./uploads/{}.aes".format(file.filename),
+        password,
+        datetime.now().isoformat(),
+    ).transact()
+
+    return {"status": "success"}

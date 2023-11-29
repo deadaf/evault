@@ -12,6 +12,6 @@ class File(BaseModel):
     secretKey: str
     createdAt: str = None
 
-    @validator("created_at", pre=True)
+    @validator("createdAt", pre=True)
     def default_created_at(cls, v):
         return v or datetime.now().isoformat()

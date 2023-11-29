@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi import APIRouter, HTTPException, UploadFile, Depends
 from web3.exceptions import ContractLogicError
 
 from app.interact import get_case_contract, get_file_contract
-from app.models import Case, File
+from app.models import Case, User, File
+from app.utils import checks
 from datetime import datetime, timedelta
 import pyAesCrypt
 import os
@@ -13,7 +14,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=list[Case])
-async def get_all_cases():
+async def get_all_cases(user: User = Depends(checks.is_user)):
     """
     Get all cases.
     """
@@ -23,13 +24,20 @@ async def get_all_cases():
     cases = []
     for case in all_cases:
         case = dict(zip(Case.__annotations__.keys(), case))
-        cases.append(case)
+        if any(
+            [
+                case["ownerAddress"] == user.walletAddress,
+                case["judgeAddress"] == user.walletAddress,
+                case["lawyerAddress"] == user.walletAddress,
+            ]
+        ):
+            cases.append(case)
 
     return cases
 
 
 @router.get("/{caseId}", response_model=Case)
-async def get_case(caseId: int):
+async def get_case(caseId: int, user: User = Depends(checks.is_user)):
     """
     Get a case by Id.
     """
@@ -39,6 +47,15 @@ async def get_case(caseId: int):
 
     if not case_info[0]:  # if caseId is 0 that means case does not exist.
         raise HTTPException(status_code=404, detail="Case not found.")
+
+    if not any(
+        [
+            case_info[5] == user.walletAddress,
+            case_info[6] == user.walletAddress,
+            case_info[7] == user.walletAddress,
+        ]
+    ):
+        raise HTTPException(status_code=401, detail="Unauthorized user.")
 
     # Convert the tuple to a dictionary
     return dict(zip(Case.__annotations__.keys(), case_info))

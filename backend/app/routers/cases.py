@@ -62,12 +62,19 @@ async def get_case(caseId: int, user: User = Depends(checks.is_user)):
 
 
 @router.put("/")
-async def create_case(case: Case):
+async def create_case(case: Case, user: User = Depends(checks.is_lawyer)):
     """
     Create a new case.
     """
     case_contract = get_case_contract()
     last_case_id = case_contract.functions.lastCaseId().call()
+    print("Last Case ID: {}".format(last_case_id))
+
+    if len({case.ownerAddress, case.lawyerAddress, case.judgeAddress}) != 3:
+        raise HTTPException(
+            status_code=401,
+            detail="Client Address, Lawyer Address & Owner Address must all be unique.",
+        )
 
     try:
         case_contract.functions.addCase(

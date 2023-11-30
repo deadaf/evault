@@ -50,25 +50,3 @@ async def delete_user(walletAddress: str):
 
     except ContractLogicError as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-
-@router.get("/{walletAddress}/cases", response_model=list[Case])
-async def get_all_cases_by_user(walletAddress: str):
-    """Get a list of cases associated with user."""
-    case_contract = get_case_contract()
-    all_cases = case_contract.functions.getAllCases().call()
-
-    user_cases = []
-    for case in all_cases:
-        case = dict(zip(Case.__annotations__.keys(), case))
-
-        if any(
-            [
-                case["ownerAddress"] == walletAddress,
-                case["judgeAddress"] == walletAddress,
-                case["lawyerAddress"] == walletAddress,
-            ]
-        ):
-            user_cases.append(case)
-
-    return user_cases

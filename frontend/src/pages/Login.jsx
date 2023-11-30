@@ -30,6 +30,7 @@ const Login = ({ setUserProp }) => {
                 navigator("/dashboard");
               }, 2000);
             } else {
+              alert(accounts);
               alert("User not found. Please sign up.");
               navigator("/signup");
             }

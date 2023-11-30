@@ -46,12 +46,6 @@ contract Case {
         });
     }
 
-    function deleteCase(uint caseId) public {
-        require(cases[caseId].caseId != 0);
-
-        delete cases[caseId];
-    }
-
     function getCaseInfo(uint caseId) public view returns (CaseInfo memory) {
         return cases[caseId];
     }

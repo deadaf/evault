@@ -95,21 +95,6 @@ async def create_case(case: Case, user: User = Depends(checks.is_lawyer)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.delete("/{caseId}")
-async def delete_case(caseId: int):
-    """
-    Delete a case.
-    """
-    try:
-        case_contract = get_case_contract()
-        case_contract.functions.deleteCase(caseId).transact()
-
-        return {"message": "Case deleted successfully"}
-
-    except ContractLogicError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
 @router.get("/{caseId}/files", response_model=list[File])
 async def get_files_by_case(caseId: str):
     """Get a list of files associated with a case."""

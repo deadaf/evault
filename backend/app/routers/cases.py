@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, UploadFile, Depends
+from fastapi.responses import StreamingResponse
 from web3.exceptions import ContractLogicError
 
 from app.interact import get_case_contract, get_file_contract
@@ -123,6 +124,51 @@ async def get_files_by_case(caseId: int, user: User = Depends(checks.is_user)):
             case_files.append(file)
 
     return case_files
+
+
+@router.get("/{caseId}/files/{fileId}")
+async def get_decrypted_file(
+    caseId: int, fileId: int, user: User = Depends(checks.is_user)
+):
+    """
+    Get the decrypted file from the blockchain.
+    """
+    case_contract = get_case_contract()
+    case_info = case_contract.functions.getCaseInfo(caseId).call()
+
+    if not any(
+        [
+            case_info[5] == user.walletAddress,
+            case_info[6] == user.walletAddress,
+            case_info[7] == user.walletAddress,
+        ]
+    ):
+        raise HTTPException(status_code=401, detail="Unauthorized user.")
+
+    file_contract = get_file_contract()
+    file_info = file_contract.functions.getFileInfo(fileId).call()
+    if any([file_info[0] == 0, file_info[2] != caseId]):
+        raise HTTPException(status_code=404, detail="File not found.")
+
+    bufferSize = 64 * 1024
+
+    pyAesCrypt.decryptFile(
+        file_info[3],
+        f"./downloads/{file_info[1]}",
+        file_info[4],
+        bufferSize,
+    )
+
+    with open(f"./downloads/{file_info[1]}", "rb") as fIn:
+        content = fIn.read()
+
+    os.remove(f"./downloads/{file_info[1]}")
+
+    return StreamingResponse(
+        iter([content]),
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": f"attachment; filename={file_info[1]}"},
+    )
 
 
 @router.put("/{caseId}/files")

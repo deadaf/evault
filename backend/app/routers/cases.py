@@ -96,15 +96,29 @@ async def create_case(case: Case, user: User = Depends(checks.is_lawyer)):
 
 
 @router.get("/{caseId}/files", response_model=list[File])
-async def get_files_by_case(caseId: str):
+async def get_files_by_case(caseId: int, user: User = Depends(checks.is_user)):
     """Get a list of files associated with a case."""
+
+    case_contract = get_case_contract()
+    case_info = case_contract.functions.getCaseInfo(caseId).call()
+
+    if not any(
+        [
+            case_info[5] == user.walletAddress,
+            case_info[6] == user.walletAddress,
+            case_info[7] == user.walletAddress,
+        ]
+    ):
+        raise HTTPException(status_code=401, detail="Unauthorized user.")
+
     file_contract = get_file_contract()
     all_files = file_contract.functions.getAllFiles().call()
 
     case_files = []
     for file in all_files:
-        file = dict(zip(Case.__annotations__.keys(), file))
+        file = dict(zip(File.__annotations__.keys(), file))
 
+        print(file)
         if file["caseId"] == caseId:
             case_files.append(file)
 
@@ -112,30 +126,45 @@ async def get_files_by_case(caseId: str):
 
 
 @router.put("/{caseId}/files")
-async def upload_a_file(caseId: int, file: UploadFile):
+async def upload_a_file(
+    caseId: int,
+    file: UploadFile,
+    user: User = Depends(checks.is_lawyer),
+):
     """Add a new file to the blockchain."""
 
+    case_contract = get_case_contract()
+    case_info = case_contract.functions.getCaseInfo(caseId).call()
+
+    if not case_info[0]:  # if caseId is 0 that means case does not exist.
+        raise HTTPException(status_code=404, detail="Case not found.")
+
+    if case_info[7] != user.walletAddress:
+        raise HTTPException(status_code=401, detail="Unauthorized user.")
+
     content = await file.read()
-    with open(f"./uploads/{file.filename}", "wb") as fIn:
+
+    file_name = datetime.now().isoformat() + "~" + file.filename
+    with open(f"./uploads/{file_name}", "wb") as fIn:
         fIn.write(content)
 
     bufferSize = 64 * 1024
     password = secrets.token_urlsafe(32)
 
     pyAesCrypt.encryptFile(
-        f"./uploads/{file.filename}",
-        f"./uploads/{file.filename}.aes",
+        f"./uploads/{file_name}",
+        f"./uploads/{file_name}.aes",
         password,
         bufferSize,
     )
 
-    os.remove(f"./uploads/{file.filename}")
+    os.remove(f"./uploads/{file_name}")
 
     file_contract = get_file_contract()
     file_contract.functions.uploadFile(
-        file.filename,
+        file_name,
         caseId,
-        "./uploads/{}.aes".format(file.filename),
+        "./uploads/{}.aes".format(file_name),
         password,
         datetime.now().isoformat(),
     ).transact()

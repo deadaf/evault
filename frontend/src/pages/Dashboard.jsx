@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
 import CasesTable from "../components/CasesTable";
 import CreateCaseBtn from "../components/createCaseBtn";
 

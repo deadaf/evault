@@ -111,14 +111,17 @@ const BrowseFilesBtn = ({ walletAddress, caseId }) => {
       </button>
 
       {showPopup && (
-        <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform bg-white p-10 shadow-md">
+        <div className="fixed left-1/2 top-1/2 w-96 -translate-x-1/2 -translate-y-1/2 transform bg-white p-10 shadow-md">
           <h2 className="mb-4 text-lg font-semibold">
             Files for Case ID: {caseId}
           </h2>
-          <ul>
+          <ul className="max-h-60 overflow-y-auto">
             {files.map((file, index) => (
-              <li key={index}>
-                {index + 1}. {file.name}{" "}
+              <li key={index} className="mb-2 flex items-center">
+                <span className="mr-2">{index + 1}.</span>
+                <span className="truncate" style={{ direction: "rtl" }}>
+                  {file.name}
+                </span>
                 <button
                   onClick={() => downloadFile(file.fileId)}
                   className="ml-2 rounded bg-blue-500 p-1 text-xs text-white hover:bg-blue-700 "

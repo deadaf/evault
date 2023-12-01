@@ -172,9 +172,10 @@ const CaseForm = ({ walletAddress, onClose }) => {
 };
 
 const CreateCaseBtn = ({ walletAddress, userType }) => {
+  console.log(userType);
   const [showForm, setShowForm] = useState(false);
   const handleClick = () => {
-    if (!userType === 1) {
+    if (userType !== 1) {
       alert("Only a Lawyer can create a case.");
       return;
     }

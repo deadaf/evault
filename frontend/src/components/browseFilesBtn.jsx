@@ -106,12 +106,16 @@ const BrowseFilesBtn = ({ walletAddress, caseId }) => {
       <button
         onClick={onClick}
         className="rounded bg-green-500 p-2 text-white hover:bg-green-700"
+        style={{ zIndex: 1 }}
       >
         Browse Files
       </button>
 
       {showPopup && (
-        <div className="fixed left-1/2 top-1/2 w-96 -translate-x-1/2 -translate-y-1/2 transform bg-white p-10 shadow-md">
+        <div
+          className="fixed left-1/2 top-1/2 w-96 -translate-x-1/2 -translate-y-1/2 transform bg-white p-10 shadow-md"
+          style={{ zIndex: 2 }}
+        >
           <h2 className="mb-4 text-lg font-semibold">
             Files for Case ID: {caseId}
           </h2>

@@ -55,7 +55,10 @@ const CaseForm = ({ walletAddress, onClose }) => {
   };
 
   return (
-    <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform bg-white p-8 shadow-md">
+    <div
+      className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform bg-white p-8 shadow-md"
+      style={{ zIndex: 2 }}
+    >
       <form onSubmit={handleSubmit}>
         <label className="mb-2 block">Title:</label>
         <input
@@ -183,7 +186,7 @@ const CreateCaseBtn = ({ walletAddress, userType }) => {
   };
 
   return (
-    <div>
+    <div style={{ zIndex: 1 }}>
       <button
         onClick={handleClick}
         className="mb-4 rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700"

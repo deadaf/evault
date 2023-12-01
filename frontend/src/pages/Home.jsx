@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+
 const Home = () => {
   return (
-    <>
+    <div className="flex h-screen items-center justify-center">
       <div className="flex flex-col gap-3">
         <Link to="/login">
           <button className="rounded-md bg-blue-500 p-4 text-white hover:bg-blue-700 focus:border-blue-300 focus:outline-none focus:ring">
@@ -15,7 +16,7 @@ const Home = () => {
           </button>
         </Link>
       </div>
-    </>
+    </div>
   );
 };
 

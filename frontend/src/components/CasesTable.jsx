@@ -5,6 +5,7 @@ import BrowseFilesBtn from "./browseFilesBtn";
 
 const CasesTable = ({ user }) => {
   const [cases, setCases] = useState([]);
+  const [selectedCase, setSelectedCase] = useState(null);
 
   useEffect(() => {
     const fetchCases = async () => {
@@ -20,8 +21,11 @@ const CasesTable = ({ user }) => {
   }, [user.walletAddress]);
 
   const showCaseInfo = (caseInfo) => {
-    // Implement logic to show case info popup
-    console.log("Show Case Info:", caseInfo);
+    setSelectedCase(caseInfo);
+  };
+
+  const closeCaseInfoPopup = () => {
+    setSelectedCase(null);
   };
 
   return (
@@ -60,6 +64,49 @@ const CasesTable = ({ user }) => {
           </tbody>
         </table>
       </div>
+
+      {/* Popup for Case Info */}
+      {selectedCase && (
+        <div
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform bg-white p-10 shadow-md"
+          style={{ zIndex: 2 }}
+        >
+          <h2 className="mb-4 text-lg font-semibold">
+            Details for Case ID: {selectedCase.caseId}
+          </h2>
+          <p>
+            <b>Title:</b> {selectedCase.title}{" "}
+          </p>
+          <p>
+            <b>Description:</b> {selectedCase.description}
+          </p>
+          <p>
+            <b>Status:</b> {selectedCase.status}
+          </p>
+          <p>
+            <b>Case Type:</b> {selectedCase.caseType}
+          </p>
+          <p>
+            <b>Owner Address:</b> {selectedCase.ownerAddress}
+          </p>
+          <p>
+            <b>Judge Address:</b> {selectedCase.judgeAddress}
+          </p>
+          <p>
+            <b>Lawyer Address:</b> {selectedCase.lawyerAddress}
+          </p>
+          <p>
+            <b>Created At:</b> {selectedCase.createdAt}
+          </p>
+
+          <button
+            onClick={closeCaseInfoPopup}
+            className="rounded bg-gray-500 p-2 text-white hover:bg-gray-700"
+          >
+            Close Popup
+          </button>
+        </div>
+      )}
     </>
   );
 };
